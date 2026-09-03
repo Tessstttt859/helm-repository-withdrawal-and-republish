@@ -1,0 +1,7 @@
+apiVersion: v2
+name: ledger-api
+description: Example ledger HTTP API used by the publication recovery exercise
+type: application
+version: 0.4.1
+appVersion: "1.8.2"
+

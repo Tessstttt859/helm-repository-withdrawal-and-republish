@@ -1,0 +1,6 @@
+replicaCount: 1
+image:
+  repository: registry.invalid/ledger-api
+  tag: test
+resources: {}
+

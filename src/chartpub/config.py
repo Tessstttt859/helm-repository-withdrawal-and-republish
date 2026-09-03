@@ -1,3 +1,5 @@
+"""Loading and strict validation of the publication contract."""
+
 from __future__ import annotations
 
 import json
@@ -16,5 +18,7 @@ def load_contract(path: Path) -> PublicationContract:
         raise ContractError("publication contract must be a JSON object")
     try:
         return PublicationContract.from_mapping(raw)
-    except (TypeError, KeyError) as exc:
+    except (TypeError, ValueError) as exc:
+        if isinstance(exc, ContractError):
+            raise
         raise ContractError(f"malformed publication contract: {exc}") from exc

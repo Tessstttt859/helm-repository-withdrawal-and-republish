@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import ssl
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -54,6 +55,15 @@ def urllib_transport(
             return response.status, dict(response.headers.items()), response.read()
     except urllib.error.HTTPError as exc:
         return exc.code, dict(exc.headers.items()), exc.read()
+    except urllib.error.URLError as exc:
+        reason = exc.reason
+        hint = ""
+        if isinstance(reason, ssl.SSLError):
+            hint = (
+                "; this interpreter has no usable CA bundle -- point SSL_CERT_FILE at one "
+                "(for example /etc/ssl/cert.pem) and retry"
+            )
+        raise PublicationError(f"cannot reach {_strip_query(url)}: {reason}{hint}") from exc
 
 
 @dataclass

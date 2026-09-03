@@ -219,3 +219,25 @@ def test_module_entry_point_runs() -> None:
     )
     assert completed.returncode == 0
     assert "withdraw" in completed.stdout
+
+
+def test_urllib_transport_explains_a_missing_ca_bundle(monkeypatch: pytest.MonkeyPatch) -> None:
+    import ssl
+
+    def raise_url(*_a: object, **_k: object) -> None:
+        raise urllib.error.URLError(ssl.SSLCertVerificationError("no issuer certificate"))
+
+    monkeypatch.setattr(urllib.request, "urlopen", raise_url)
+    with pytest.raises(PublicationError, match="SSL_CERT_FILE"):
+        urllib_transport("GET", "https://api.github.com/x?per_page=1", {}, None)
+
+
+def test_urllib_transport_reports_other_network_failures(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def raise_url(*_a: object, **_k: object) -> None:
+        raise urllib.error.URLError("name resolution failed")
+
+    monkeypatch.setattr(urllib.request, "urlopen", raise_url)
+    with pytest.raises(PublicationError, match="cannot reach"):
+        urllib_transport("GET", "https://api.github.com/x", {}, None)

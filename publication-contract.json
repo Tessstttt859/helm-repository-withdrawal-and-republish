@@ -9,8 +9,7 @@
   "replacement_version": "0.4.1",
   "bad_tag": "chart-v0.4.0",
   "replacement_tag": "chart-v0.4.1",
-  "expected_bad_tag_target": "SET_BY_EVALUATOR",
-  "expected_pages_tip": "SET_BY_EVALUATOR",
+  "expected_bad_tag_target": "39f52ee5de62630ee4bc0bfc9caa8c055f64bbac",
+  "expected_pages_tip": "cd804e4953cc3ba2a6b5d3680d39944f3d2fc941",
   "release_asset_name": "ledger-api-{version}.tgz"
 }
-

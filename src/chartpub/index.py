@@ -45,4 +45,3 @@ def remove_version(index: dict[str, Any], chart: str, version: str) -> dict[str,
 def write_index(path: Path, index: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(yaml.safe_dump(index, sort_keys=False), encoding="utf-8")
-

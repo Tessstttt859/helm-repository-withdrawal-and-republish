@@ -12,4 +12,3 @@ class PublicationError(ChartpubError):
 
 class RemoteConflict(PublicationError):
     """Remote state changed after it was inspected."""
-

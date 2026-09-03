@@ -50,4 +50,3 @@ class RemoteSnapshot:
     pages_tip: str
     bad_tag_target: str | None
     bad_release_state: str | None
-

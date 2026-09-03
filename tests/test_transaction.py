@@ -15,7 +15,9 @@ def test_release_is_verified_before_pages_change(tmp_path: Path) -> None:
         events.append("release")
         raise RuntimeError("upload rejected")
 
-    publisher = Publisher(tmp_path / "state", lambda _artifact: events.append("pages"), fail_release)
+    publisher = Publisher(
+        tmp_path / "state", lambda _artifact: events.append("pages"), fail_release
+    )
     artifact = Artifact(tmp_path / "chart.tgz", "ledger-api", "0.4.1", "a" * 64, 1)
     with pytest.raises(RuntimeError, match="upload rejected"):
         publisher.publish(artifact)
@@ -28,4 +30,3 @@ def test_completed_publication_records_digest(tmp_path: Path) -> None:
     publisher.publish(artifact)
     assert '"phase": "complete"' in (tmp_path / "state" / "transaction.json").read_text()
     assert artifact.sha256 in (tmp_path / "state" / "transaction.json").read_text()
-

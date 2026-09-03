@@ -60,4 +60,3 @@ def test_rejects_boolean_schema_version(tmp_path: Path) -> None:
     write_contract(path, value)
     with pytest.raises(ContractError, match="schema_version"):
         load_contract(path)
-

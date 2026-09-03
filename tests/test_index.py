@@ -24,4 +24,3 @@ def test_remove_preserves_other_versions() -> None:
     remove_version(index, "ledger-api", "0.4.0")
     versions = index["entries"]["ledger-api"]  # type: ignore[index]
     assert [item["version"] for item in versions] == ["0.3.0"]
-

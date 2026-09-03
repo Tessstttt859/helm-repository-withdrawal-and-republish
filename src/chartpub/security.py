@@ -5,7 +5,6 @@ from pathlib import Path
 
 from chartpub.errors import ChartpubError
 
-
 SENSITIVE_NAMES = {"GITHUB_TOKEN", "GH_TOKEN"}
 
 
@@ -40,4 +39,3 @@ def redact(message: str, secrets: Mapping[str, str]) -> str:
         if value:
             result = result.replace(value, "[REDACTED]")
     return result
-

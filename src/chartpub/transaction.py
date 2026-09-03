@@ -6,13 +6,14 @@ from pathlib import Path
 
 from chartpub.models import Artifact
 
-
 PageWriter = Callable[[Artifact], None]
 ReleaseWriter = Callable[[Artifact], None]
 
 
 class Publisher:
-    def __init__(self, state_dir: Path, write_pages: PageWriter, write_release: ReleaseWriter) -> None:
+    def __init__(
+        self, state_dir: Path, write_pages: PageWriter, write_release: ReleaseWriter
+    ) -> None:
         self.state_dir = state_dir
         self.write_pages = write_pages
         self.write_release = write_release
@@ -35,4 +36,3 @@ class Publisher:
         (self.state_dir / "transaction.json").write_text(
             json.dumps(payload, indent=2) + "\n", encoding="utf-8"
         )
-

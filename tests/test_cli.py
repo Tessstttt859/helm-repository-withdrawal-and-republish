@@ -21,4 +21,3 @@ def test_all_lifecycle_commands_exist() -> None:
     help_text = parser.format_help()
     assert "withdraw" in help_text
     assert "repair" in help_text
-

@@ -18,4 +18,3 @@ def load_contract(path: Path) -> PublicationContract:
         return PublicationContract.from_mapping(raw)
     except (TypeError, KeyError) as exc:
         raise ContractError(f"malformed publication contract: {exc}") from exc
-

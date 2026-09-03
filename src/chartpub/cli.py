@@ -3,8 +3,8 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Sequence
 
 from chartpub.config import load_contract
 from chartpub.errors import ChartpubError
@@ -43,4 +43,3 @@ def main(argv: Sequence[str] | None = None) -> int:
     except ChartpubError as exc:
         print(f"chartpub: {exc}", file=sys.stderr)
         return 2
-

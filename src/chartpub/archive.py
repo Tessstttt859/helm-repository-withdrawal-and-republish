@@ -34,4 +34,3 @@ def package_chart(chart_dir: Path, output_dir: Path, version: str) -> Artifact:
 
 def verify_archive(path: Path, expected_sha256: str) -> bool:
     return sha256_file(path) == expected_sha256
-

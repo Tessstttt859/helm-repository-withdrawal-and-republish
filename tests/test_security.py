@@ -15,4 +15,3 @@ def test_reads_token_without_logging(tmp_path: Path) -> None:
 
 def test_redacts_gh_token_alias() -> None:
     assert redact("token alias-secret", {"GH_TOKEN": "alias-secret"}) == "token [REDACTED]"
-

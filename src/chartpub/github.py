@@ -18,7 +18,9 @@ class Response:
 
 
 class GitHubClient:
-    def __init__(self, repository: str, token: str, api_url: str = "https://api.github.com") -> None:
+    def __init__(
+        self, repository: str, token: str, api_url: str = "https://api.github.com"
+    ) -> None:
         self.repository = repository
         self.token = token
         self.api_url = api_url.rstrip("/")
@@ -67,4 +69,3 @@ class GitHubClient:
     def delete_tag(self, tag: str) -> None:
         encoded = urllib.parse.quote(f"tags/{tag}", safe="/")
         self.request("DELETE", f"/repos/{self.repository}/git/refs/{encoded}")
-

@@ -21,4 +21,3 @@ def test_package_is_reproducible(tmp_path: Path, chart_dir: Path) -> None:
     finally:
         os.utime(chart_yaml, (stat.st_atime, stat.st_mtime))
     assert first.sha256 == second.sha256
-

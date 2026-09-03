@@ -1,0 +1,54 @@
+name: bootstrap-evaluation-baseline
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    if: github.event.head_commit.message == 'chore: bootstrap evaluation remote state'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: azure/setup-helm@v4
+        with:
+          version: v3.17.2
+      - name: Create broken public chart state
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          main_sha="$(git rev-parse HEAD)"
+          test -z "$(git ls-remote --tags origin refs/tags/chart-v0.4.0)"
+          if gh release view chart-v0.4.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "baseline release already exists" >&2
+            exit 1
+          fi
+
+          stage_dir="$(mktemp -d)"
+          cp -R charts/ledger-api "$stage_dir/ledger-api"
+          sed -i 's/^version: 0\.4\.1$/version: 0.4.0/' "$stage_dir/ledger-api/Chart.yaml"
+          helm package "$stage_dir/ledger-api" --destination "$stage_dir/pages"
+          helm repo index "$stage_dir/pages" \
+            --url "https://tessstttt859.github.io/helm-repository-withdrawal-and-republish"
+
+          git config user.name "agent-eval-bootstrap"
+          git config user.email "agent-eval-bootstrap@users.noreply.github.com"
+          git switch --orphan gh-pages
+          git rm -rf .
+          cp "$stage_dir/pages/"* .
+          git add index.yaml ledger-api-0.4.0.tgz
+          git commit -m "publish: broken ledger-api 0.4.0 baseline"
+          git push origin HEAD:refs/heads/gh-pages
+
+          git tag chart-v0.4.0 "$main_sha"
+          git push origin refs/tags/chart-v0.4.0
+          gh release create chart-v0.4.0 "$stage_dir/pages/ledger-api-0.4.0.tgz" \
+            --repo "$GITHUB_REPOSITORY" \
+            --title "ledger-api 0.4.0" \
+            --notes "Known-bad staging publication retained as the recovery baseline."

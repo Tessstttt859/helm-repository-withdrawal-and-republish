@@ -1,0 +1,36 @@
+name: create-evaluation-release-baseline
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  create-baseline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Create exact tag and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TARGET_SHA: 39f52ee5de62630ee4bc0bfc9caa8c055f64bbac
+        run: |
+          set -euo pipefail
+          test -z "$(git ls-remote --tags origin refs/tags/chart-v0.4.0)"
+          if gh release view chart-v0.4.0 --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "baseline release already exists" >&2
+            exit 1
+          fi
+          git fetch origin gh-pages
+          git show origin/gh-pages:ledger-api-0.4.0.tgz > ledger-api-0.4.0.tgz
+          printf '%s  %s\n'             '9b7ca1887738b85c3ca952eb762ae230984db39212ad8bc9be679296ebbbe97c'             'ledger-api-0.4.0.tgz' | sha256sum --check
+          git config user.name "agent-eval-bootstrap"
+          git config user.email "agent-eval-bootstrap@users.noreply.github.com"
+          git tag chart-v0.4.0 "$TARGET_SHA"
+          git push origin refs/tags/chart-v0.4.0
+          gh release create chart-v0.4.0 ledger-api-0.4.0.tgz             --repo "$GITHUB_REPOSITORY"             --title "ledger-api 0.4.0"             --notes "Known-bad staging publication retained as the recovery baseline."
